@@ -5,7 +5,7 @@ provider "aws" {
 data "aws_availability_zones" "available" {}
 
 locals {
-  cluster_name = "poc-eks-cluster"
+  cluster_name = "eks-cluster-poc"
 }
 
 module "vpc" {
