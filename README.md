@@ -75,6 +75,8 @@ Run
 
 #git clone https://github.com/Martin-Raju/eks-terraform.git
 
+(Set kubernetes_version and aws_region as variables in the variables.tf file so they can be updated as needed)
+
 #####Initialize Terraform
 
 Navigate into the project directory.
