@@ -22,4 +22,13 @@ output "oidc_provider_arn" {
   value = module.eks.oidc_provider_arn
 }
 
+output "S3_Bucket" {
+  description = "AWS S3"
+  value       = var.bucket_name
+}
+
+output "EKS_Cluster_Name" {
+  description = "AWS Cluster Name"
+  value       = var.cluster_name
+}
 

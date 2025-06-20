@@ -47,6 +47,7 @@ Paste the updated JSON policy and save it.
 				"iam:*",
 				"kms:*",
 				"eks:*",
+				"s3:*"
 				"autoscaling:*"
 			],
 			"Resource": "*"

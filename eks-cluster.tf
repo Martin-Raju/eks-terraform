@@ -1,14 +1,14 @@
 module "eks" {
   source          = "terraform-aws-modules/eks/aws"
   version         = "20.37.0"
-  cluster_name    = local.cluster_name
+  cluster_name    = var.cluster_name
   cluster_version = var.kubernetes_version
   subnet_ids      = module.vpc.private_subnets
 
   enable_irsa = true
 
   tags = {
-    cluster = "demo"
+    cluster = "var.cluster_name"
   }
 
   vpc_id = module.vpc.vpc_id
