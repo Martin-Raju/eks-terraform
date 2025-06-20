@@ -22,12 +22,6 @@ variable "bucket_name" {
   type        = string
 }
 
-resource "random_string" "suffix" {
-  length  = 6
-  upper   = false
-  special = false
-}
-
 variable "environment" {
   description = "The deployment environment (e.g., dev, staging, prod)"
   type        = string
