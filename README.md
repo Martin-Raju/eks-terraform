@@ -48,6 +48,7 @@ Paste the updated JSON policy and save it.
 				"kms:*",
 				"eks:*",
 				"s3:*"
+                "dynamodb:*"
 				"autoscaling:*"
 			],
 			"Resource": "*"

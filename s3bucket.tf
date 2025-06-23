@@ -8,5 +8,12 @@ resource "aws_s3_bucket" "example" {
   }
 }
 
-
+terraform {
+  backend "s3" {
+    bucket         = "my-poc-app-bucket-989313"
+    key            = "envs/dev/terraform.tfstate"
+    region         = "us-east-1"
+    encrypt        = true
+  }
+}
 
