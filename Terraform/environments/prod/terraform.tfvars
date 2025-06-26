@@ -1,7 +1,8 @@
 kubernetes_version = "1.27"
 vpc_cidr = "10.0.0.0/16"
 aws_region = "us-east-2"
-cluster_name = "prod-poc-cluster"
-environment = "prod"
+cluster_name = "dev-poc-cluster"
+environment = "dev"
 bucket_name = "poc-app-bucket-0123456"
-
+aws_acc_id = "590636267315"
+aws_user_name = "user_313"
