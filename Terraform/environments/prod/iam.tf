@@ -1,5 +1,5 @@
 resource "aws_iam_role" "eks_admin_role" {
-  name = "EKSAdminRole"
+  name = "EKSAdminRoleprod"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
@@ -19,7 +19,7 @@ resource "aws_iam_role_policy_attachment" "eks_cluster_policy_attach" {
 }
 
 
-# Create IAM access entry
+ #Create IAM access entry
 resource "aws_eks_access_entry" "eks_user_access" {
   cluster_name   = var.cluster_name
   principal_arn  = "arn:aws:iam::${var.aws_acc_id}:user/${var.aws_user_name}"
