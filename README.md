@@ -139,7 +139,7 @@ Run:
 
 ######start a container and send an infinite loop of queries to the ‘php-apache’ service, listening on port 8080
 Run:
-# kubectl run -i --tty load-generator --rm --image=busybox --restart=Never -- /bin/sh -c "while sleep 0.01; do wget -q -O- http://hpa-demo-deployment; done"
+#kubectl run -i --tty load-generator --rm --image=busybox --restart=Never -- /bin/sh -c "while sleep 0.01; do wget -q -O- http://hpa-demo-deployment; done"
 
 ####Monitor HPA:
 Once CPU usage exceeds 50%, HPA will scale the pod count up.
