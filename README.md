@@ -66,7 +66,7 @@ Save the Access key ID and Secret access key in a secure place (e.g., Notepad or
 
 Run the following command and enter your AWS credentials when prompted:
 
-aws configure
+###aws configure
 
 This command links Terraform to your AWS account using the provided credentials.
 
@@ -78,28 +78,24 @@ Run
 
 (update all  values in the terraform.tfvars file)
 
-#####Initialize Terraform
+###Create S3 bucket for statefile
 
-Navigate into the project directory.
+Navigate into the project directory (\eks-terraform\Terraform\global).
+update bucket name in s3bucket.tf
+Run:
+
+#terraform init
+#terraform plan
+#terraform apply --auto-approve
+
+#####create cluster
+
+Navigate into the project directory (eks-terraform\Terraform\environments\dev or stage or prod).
 
 Run:
 
 #terraform init
-
-This initializes the Terraform environment and downloads the required modules, providers, and backend configuration.
-
-######Review the Terraform Configuration
-
-You can preview the changes that Terraform will make by running:
-
 #terraform plan
-
-This helps ensure everything is set up correctly before making actual changes.
-
-#####Apply the Terraform Configuration
-
-To create the EKS cluster along with its VPC, run:
-
 #terraform apply --auto-approve
 
 Confirm the prompt to proceed. Terraform will begin provisioning the resources as defined in the configuration.
@@ -109,7 +105,6 @@ Run:
 #aws eks --region <region> update-kubeconfig --name <cluster_name>
 
 #kubectl get pods -A
-
 
 ###########Step-by-Step Guide: EKS Scaling Demonstration################
 
