@@ -48,7 +48,6 @@ Paste the updated JSON policy and save it.
 				"kms:*",
 				"eks:*",
 				"s3:*"
-                "dynamodb:*"
 				"autoscaling:*"
 			],
 			"Resource": "*"
@@ -77,7 +76,7 @@ Run
 
 #git clone https://github.com/Martin-Raju/eks-terraform.git
 
-(Set kubernetes_version and aws_region as variables in the variables.tf file so they can be updated as needed)
+(update all  values in the terraform.tfvars file)
 
 #####Initialize Terraform
 
@@ -105,41 +104,18 @@ To create the EKS cluster along with its VPC, run:
 
 Confirm the prompt to proceed. Terraform will begin provisioning the resources as defined in the configuration.
 
-#####Cluster Setup
-
-After creating the EKS cluster:
-
-Then navigate to Amazon EKS > Clusters > [cluster_name] > Access > IAM access entries
-
-Click Create access entry.
-
-select the following details:
-
-IAM principal ARN: arn:aws:iam::<id>:user/<aws_username>
-
-Type: Standard
-
-Policy name: 
-
-AmazonEKSAdminPolicy
-AmazonEKSClusterAdminPolicy
-
-Access scope: Cluster
-
-Add the policy.
-
-##### verify cluster access
+####verify cluster access
 Run:
 #aws eks --region <region> update-kubeconfig --name <cluster_name>
 
 #kubectl get pods -A
 
 
-Step-by-Step Guide: EKS Scaling Demonstration
+###########Step-by-Step Guide: EKS Scaling Demonstration################
 
 #####Install Metrics Server (for HPA)
 Run:
-#kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
+#kubectl apply -f Kubernetes/metrics.yml
 
 ####Verify installation:
 Run:
@@ -147,31 +123,36 @@ Run:
 
 #####Deploy a Sample Application
 Run:
-#kubectl apply -f Kubernetes/cpu-stress.yaml
+#kubectl apply -f Kubernetes/sampleapp.yml
+
+#####Deploy a Sample service
+Run:
+#kubectl apply -f Kubernetes/sampleappservice.yml
 
 ######Verify the pod count 
 Run:
 #kubectl get pods 
 
-####Enable Horizontal Pod Autoscaler (HPA)
+####Deploy Horizontal Pod Autoscaler (HPA)
 Run:
-#kubectl autoscale deployment cpu-stress --cpu-percent=50 --min=1 --max=10
+#kubectl apply -f Kubernetes/hpa.yml
+
+######start a container and send an infinite loop of queries to the ‘php-apache’ service, listening on port 8080
+Run:
+# kubectl run -i --tty load-generator --rm --image=busybox --restart=Never -- /bin/sh -c "while sleep 0.01; do wget -q -O- http://hpa-demo-deployment; done"
 
 ####Monitor HPA:
+Once CPU usage exceeds 50%, HPA will scale the pod count up.
 Run:
 #kubectl get hpa
-
-Once CPU usage exceeds 50%, HPA will scale the pod count up.
-
-####Verify the pod count 
-Run:
-#kubectl get pods 
-#kubectl describe hpa cpu-stress
+#kubectl get pods
+#kubectl get deployment hpa-demo-deployment 
+#kubectl describe hpa
 
 ####Clean Up 
 Run:
-#kubectl delete deployment cpu-stress
-
-#kubectl delete hpa cpu-stress
-
+#kubectl delete -f Kubernetes/sampleapp.yml
+#kubectl apply -f Kubernetes/hpa.yml
+#kubectl delete -f Kubernetes/sampleappservice.yml
+#kubectl delete -f Kubernetes/metrics.yml
 #terraform destroy --auto-approve
