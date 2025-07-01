@@ -66,7 +66,7 @@ Save the Access key ID and Secret access key in a secure place (e.g., Notepad or
 
 Run the following command and enter your AWS credentials when prompted:
 
-aws configure
+###aws configure
 
 This command links Terraform to your AWS account using the provided credentials.
 
@@ -76,30 +76,37 @@ Run
 
 #git clone https://github.com/Martin-Raju/eks-terraform.git
 
-(update all  values in the terraform.tfvars file)
 
-#####Initialize Terraform
 
-Navigate into the project directory.
+###Create S3 bucket for statefile
+
+Navigate into the project directory (\eks-terraform\Terraform\global).
+update bucket name in s3bucket.tf
+Run:
+
+#terraform init
+#terraform plan
+#terraform apply --auto-approve
+
+##update all  values in the terraform.tfvars file
+
+kubernetes_version = 
+vpc_cidr = 
+aws_region = 
+cluster_name = 
+environment = 
+bucket_name = 
+aws_acc_id = 
+aws_user_name = 
+
+#####create cluster
+
+Navigate into the project directory (eks-terraform\Terraform\environments\dev or stage or prod).
 
 Run:
 
 #terraform init
-
-This initializes the Terraform environment and downloads the required modules, providers, and backend configuration.
-
-######Review the Terraform Configuration
-
-You can preview the changes that Terraform will make by running:
-
 #terraform plan
-
-This helps ensure everything is set up correctly before making actual changes.
-
-#####Apply the Terraform Configuration
-
-To create the EKS cluster along with its VPC, run:
-
 #terraform apply --auto-approve
 
 Confirm the prompt to proceed. Terraform will begin provisioning the resources as defined in the configuration.
@@ -108,51 +115,112 @@ Confirm the prompt to proceed. Terraform will begin provisioning the resources a
 Run:
 #aws eks --region <region> update-kubeconfig --name <cluster_name>
 
-#kubectl get pods -A
+#update cluster node group policies
+
+Navigate to:
+
+Amazon EKS > Clusters > dev-poc-cluster > [node_group-name] > Node IAM role ARN > Permissions policies > Create inline policy (JSON)
+
+Add the following policy:
 
 
-###########Step-by-Step Guide: EKS Scaling Demonstration################
+{
+	"Version": "2012-10-17",
+	"Statement": [
+		{
+			"Effect": "Allow",
+			"Action": [
+				"autoscaling:DescribeAutoScalingGroups",
+				"autoscaling:DescribeAutoScalingInstances",
+				"autoscaling:DescribeLaunchConfigurations",
+				"autoscaling:DescribeTags",
+				"autoscaling:SetDesiredCapacity",
+				"autoscaling:TerminateInstanceInAutoScalingGroup"
+			],
+			"Resource": "*"
+		},
+		{
+			"Effect": "Allow",
+			"Action": [
+				"ec2:DescribeLaunchTemplateVersions",
+				"ec2:DescribeInstanceTypes",
+				"ec2:DescribeInstances",
+				"ec2:DescribeImages",
+				"ec2:DescribeSubnets",
+				"ec2:DescribeSecurityGroups",
+				"ec2:DescribeAvailabilityZones",
+				"ec2:DescribeTags"
+			],
+			"Resource": "*"
+		}
+	]
+}
 
-#####Install Metrics Server (for HPA)
+#####Install Metrics Server
 Run:
-#kubectl apply -f Kubernetes/metrics.yml
+#kubectl apply -f Kubernetes/global/metrics.yml
 
-####Verify installation:
+#In Kubernetes/global/cluster-autoscaler.yaml, update <cluster-name>
+
+  - --node-group-auto-discovery=asg:tag=k8s.io/cluster-autoscaler/enabled,k8s.io/cluster-autoscaler/<cluster-name>
+
+#####Install Cluster-Autoscaler
 Run:
-#kubectl get deployment metrics-server -n kube-system
+#kubectl apply -f Kubernetes/global/cluster-autoscaler.yaml
+
+####Verify installation
+Run:
+ #kubectl -n kube-system logs -f deployment/cluster-autoscaler
+ #kubectl get pods -A
+
+
+###########EKS Scaling Demonstration(HPA and cluster-autoscale)################
+
 
 #####Deploy a Sample Application
 Run:
-#kubectl apply -f Kubernetes/sampleapp.yml
+#kubectl apply -f Kubernetes/HPA/sampleapp.yml
 
 #####Deploy a Sample service
 Run:
-#kubectl apply -f Kubernetes/sampleappservice.yml
-
-######Verify the pod count 
-Run:
-#kubectl get pods 
+#kubectl apply -f Kubernetes/HPA/sampleappservice.yml
 
 ####Deploy Horizontal Pod Autoscaler (HPA)
 Run:
-#kubectl apply -f Kubernetes/hpa.yml
+#kubectl apply -f Kubernetes/HPA/hpa.yml
+
+######Verify the pod/node counts 
+Run:
+#kubectl get pods 
+#kubectl get nodes
 
 ######start a container and send an infinite loop of queries to the ‘php-apache’ service, listening on port 8080
-Run:
+open new terminal and run:
 #kubectl run -i --tty load-generator --rm --image=busybox --restart=Never -- /bin/sh -c "while sleep 0.01; do wget -q -O- http://hpa-demo-deployment; done"
 
-####Monitor HPA:
-Once CPU usage exceeds 50%, HPA will scale the pod count up.
+###Observe Pods and Nodes Scaling 
+As CPU usage exceeds 50%, pods and nodes will scale up.
 Run:
-#kubectl get hpa
 #kubectl get pods
-#kubectl get deployment hpa-demo-deployment 
-#kubectl describe hpa
+#kubectl get nodes
+#kubectl -n kube-system logs -f deployment/cluster-autoscaler
+
+####Scale Down Pods and Nodes
+
+Stop the load generator using CTRL+C.
+As CPU usage decreases, pods and nodes will scale down automatically
+
+Run:
+#kubectl get pods
+#kubectl get nodes
+#kubectl -n kube-system logs -f deployment/cluster-autoscaler
 
 ####Clean Up 
 Run:
-#kubectl delete -f Kubernetes/sampleapp.yml
-#kubectl apply -f Kubernetes/hpa.yml
-#kubectl delete -f Kubernetes/sampleappservice.yml
-#kubectl delete -f Kubernetes/metrics.yml
+#kubectl delete -f Kubernetes/HPA/sampleapp.yml
+#kubectl delete -f Kubernetes/HPA/hpa.yml
+#kubectl delete -f Kubernetes/HPA/sampleappservice.yml
+#kubectl delete -f Kubernetes/global/metrics.yml
+#kubectl delete -f Kubernetes/global/cluster-autoscaler.yml
+cd Terraform/env
 #terraform destroy --auto-approve
