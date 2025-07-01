@@ -26,6 +26,7 @@ variable "environment" {
   description = "The deployment environment (e.g., dev, staging, prod)"
   type        = string
 }
+
 variable "aws_acc_id" {
   description = "AWS account ID"
   type        = string
