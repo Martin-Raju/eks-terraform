@@ -37,12 +37,12 @@ data:
     [OUTPUT]
         Name              loki
         Match             *
-        Host              loki.loki.svc.cluster.local
+        Host              loki.monitoring.svc.cluster.local
         Port              3100
         URI               /loki/api/v1/push
         Auto_Kubernetes_Labels On
         Line_Format        json
-        Remove_Keys        kubernetes
+        Labels             job=fluent-bit,namespace=$kubernetes['namespace_name'],pod=$kubernetes['pod_name'],node=$kubernetes['host']
 
   parsers.conf: |
     [PARSER]
