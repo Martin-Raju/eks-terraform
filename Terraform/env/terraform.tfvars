@@ -1,8 +1,10 @@
-kubernetes_version = "1.27"
-vpc_cidr = "10.0.0.0/16"
-aws_region = "us-east-1"
-cluster_name = "stage-poc-cluster"
-environment = "stage"
-bucket_name = "poc-app-bucket01-0123456"
-aws_acc_id = "590636267315"
-aws_user_name = "user_313"
+kubernetes_version         = "1.27"
+vpc_cidr                   = "10.0.0.0/16"
+aws_region                 = "us-east-1"
+cluster_name               = "dev-poc-cluster"
+environment                = "dev"
+bucket_name                = "poc-app-bucket01-0123456"
+aws_acc_id                 = "590636267315"
+aws_user_name              = "user_313"
+
+
