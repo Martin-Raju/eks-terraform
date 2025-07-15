@@ -1,9 +1,9 @@
 resource "aws_s3_bucket" "poc" {
-  bucket = "poc-app-bucket02-0123456"
+  bucket = "poc-prod-bucket02-0123456"
   force_destroy = false 
 
   tags = {
-    Name        = "poc-app-bucket02-0123456"
+    Name        = "poc-prod-bucket02-0123456"
     Environment = "live"
   }
 }

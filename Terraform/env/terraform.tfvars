@@ -1,10 +1,23 @@
 kubernetes_version         = "1.27"
 vpc_cidr                   = "10.0.0.0/16"
-aws_region                 = "us-east-1"
-cluster_name               = "dev-poc-cluster"
-environment                = "dev"
-bucket_name                = "poc-app-bucket01-0123456"
+aws_region                 = "us-east-2"
+cluster_name               = "prod-poc-cluster"
+environment                = "production"
+bucket_name                = "poc-prod-bucket01-0123456"
 aws_acc_id                 = "590636267315"
 aws_user_name              = "user_313"
+worker_mgmt_ingress_cidrs  = [
+							  "10.0.0.0/8",
+							  "172.16.0.0/12",
+							  "192.168.0.0/16"
+							 ]
 
+private_subnets            = [
+							  "10.0.1.0/24",
+							  "10.0.2.0/24"
+							 ]
 
+public_subnets             = [
+							  "10.0.4.0/24",
+							  "10.0.5.0/24"
+							 ]
