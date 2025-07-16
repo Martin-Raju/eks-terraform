@@ -55,7 +55,7 @@ Open the JSON tab and paste the following policy:
 		}
 	]
 }
-
+```
 ### Create Access Keys
 
 Navigate to IAM > Users > [your_username] > Security credentials > Create access key
@@ -75,20 +75,20 @@ This command links Terraform to your AWS account using the provided credentials.
 Run
 ``` bash
 git clone https://github.com/Martin-Raju/eks-terraform.git
-
+```
 ## Create an S3 Bucket for Terraform State
 
 Navigate to the S3 bucket configuration directory: 
 ``` bash
 cd eks-terraform/Terraform/global
-
+```
 update bucket name in s3bucket.tf
 Run:
 ``` bash
 terraform init
 terraform plan
 terraform apply --auto-approve
-
+```
 ## update all values in the terraform.tfvars file
 ``` bash
 kubernetes_version = 
@@ -101,7 +101,7 @@ aws_acc_id =
 aws_user_name =
 private_subnets =
 public_subnets =
- 
+```
 ## Create the EKS Cluster
 
 Navigate into the project directory (eks-terraform\Terraform\env.
@@ -111,7 +111,7 @@ Run:
 terraform init
 terraform plan
 terraform apply --auto-approve
-
+```
 Confirm the prompt to proceed. Terraform will begin provisioning the resources as defined in the configuration.
 
 ## verify cluster access
@@ -119,32 +119,32 @@ Confirm the prompt to proceed. Terraform will begin provisioning the resources a
 Run:
 ``` bash
 aws eks --region <region> update-kubeconfig --name <cluster_name>
-
+```
 ## Install Metrics Server
 
 Run:
 ``` bash
 kubectl apply -f Kubernetes/global/metrics.yml
-
+```
 ## Update Cluster Autoscaler Configuration
 
 In Kubernetes/global/cluster-autoscaler.yaml, update the following line:
 ``` bash
   - --node-group-auto-discovery=asg:tag=k8s.io/cluster-autoscaler/enabled,k8s.io/cluster-autoscaler/<cluster-name>
-
+```
 ## Install Cluster-Autoscaler
 
 Run:
 ``` bash
 kubectl apply -f Kubernetes/global/cluster-autoscaler.yaml
-
+```
 ## Verify Autoscaler Installation
 
 Run:
 ``` bash
 kubectl -n kube-system logs -f deployment/cluster-autoscaler
 kubectl get pods -A
-
+```
 ## EKS Scaling Demonstration(HPA and cluster-autoscale)
 
 ### Deploy a Sample Application
@@ -152,23 +152,23 @@ kubectl get pods -A
 Run:
 ``` bash
 kubectl apply -f Kubernetes/HPA/sampleapp.yml
-
+```
 ### Deploy a Sample service
 Run:
 ``` bash
 kubectl apply -f Kubernetes/HPA/sampleappservice.yml
-
+```
 ### Deploy Horizontal Pod Autoscaler (HPA)
 Run:
 ``` bash
 kubectl apply -f Kubernetes/HPA/hpa.yml
-
+```
 ### Verify the pod/node counts 
 Run:
 ``` bash
 kubectl get pods 
 kubectl get nodes
-
+```
 ### Generate Load
 
 Start a container and send an infinite loop of queries to the ‘php-apache’ service, listening on port 8080
@@ -176,7 +176,7 @@ Start a container and send an infinite loop of queries to the ‘php-apache’ s
 open new terminal and run:
 ``` bash
 kubectl run -i --tty load-generator --rm --image=busybox --restart=Never -- /bin/sh -c "while sleep 0.01; do wget -q -O- http://hpa-demo-deployment; done"
-
+```
 ### Observe Scaling 
 
 As CPU usage exceeds 50%, pods and nodes will scale up.
@@ -186,7 +186,7 @@ Run:
 kubectl get pods
 kubectl get nodes
 kubectl -n kube-system logs -f deployment/cluster-autoscaler
-
+```
 ###  Stop Load and Scale Down
 
 Stop the load generator using CTRL+C.
@@ -197,22 +197,22 @@ Run:
 kubectl get pods
 kubectl get nodes
 kubectl -n kube-system logs -f deployment/cluster-autoscaler
-
+```
 
 ## Monitoring and Logging (Prometheus, Grafana and Loki)
 
 ### Deploy Loki
 ``` bash
 kubectl apply -f Kubernetes\monitoring\Loki
-
+```
 ### Deploy Grafana
 ``` bash
 kubectl apply -f Kubernetes\monitoring\graphana
-
+```
 ### Deploy prometheus
 ``` bash
 kubectl apply -f Kubernetes\monitoring\prometheus
-
+```
 ## Clean Up 
 
 Run:
@@ -227,3 +227,4 @@ kubectl delete -f Kubernetes/global/metrics.yml
 kubectl delete -f Kubernetes/global/cluster-autoscaler.yml
 cd Terraform/env
 terraform destroy --auto-approve
+```
