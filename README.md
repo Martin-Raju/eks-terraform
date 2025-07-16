@@ -204,7 +204,7 @@ kubectl apply -f Kubernetes\monitoring\prometheus
 ## Clean Up 
 
 Run:
-
+``` bash
 kubectl delete -f Kubernetes\monitoring\Loki
 kubectl delete -f Kubernetes\monitoring\graphana
 kubectl delete -f Kubernetes\monitoring\prometheus
