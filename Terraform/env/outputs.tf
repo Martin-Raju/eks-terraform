@@ -31,4 +31,3 @@ output "S3_Bucket_Name" {
   description = "AWS S3_Bucket Name"
   value       = var.bucket_name
 }
-
