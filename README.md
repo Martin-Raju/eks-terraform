@@ -65,9 +65,9 @@ Save the Access Key ID and Secret Access Key securely.
 ## Connect Terraform with AWS
 
 Run the following command and enter your AWS credentials when prompted:
-
-## aws configure
-
+``` bash
+ aws configure
+```
 This command links Terraform to your AWS account using the provided credentials.
 
 ## Clone the repository.
@@ -89,7 +89,7 @@ terraform init
 terraform plan
 terraform apply --auto-approve
 ```
-## update all values in the terraform.tfvars file
+## Update all values in the terraform.tfvars file
 ``` bash
 kubernetes_version = 
 vpc_cidr = 
@@ -114,7 +114,7 @@ terraform apply --auto-approve
 ```
 Confirm the prompt to proceed. Terraform will begin provisioning the resources as defined in the configuration.
 
-## verify cluster access
+## Verify cluster access
 
 Run:
 ``` bash
