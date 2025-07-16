@@ -1,43 +1,43 @@
 variable "kubernetes_version" {
-								description = "kubernetes version"
-								type        = string
+  description = "kubernetes version"
+  type        = string
 }
 variable "vpc_cidr" {
-								description = "default CIDR range of the VPC"
-								type        = string
+  description = "default CIDR range of the VPC"
+  type        = string
 }
 variable "aws_region" {
-								description = "aws region"
-								type        = string
+  description = "aws region"
+  type        = string
 }
 variable "cluster_name" {
-								description = "The name of the EKS cluster"
-								type        = string
+  description = "The name of the EKS cluster"
+  type        = string
 }
 variable "bucket_name" {
-								description = "The name of the S3 bucket"
-								type        = string
+  description = "The name of the S3 bucket"
+  type        = string
 }
 variable "environment" {
-								description = "The deployment environment (e.g., dev, staging, prod)"
-								type        = string
+  description = "The deployment environment (e.g., dev, staging, prod)"
+  type        = string
 }
 variable "aws_acc_id" {
-								description = "AWS account ID"
-								type        = string
+  description = "AWS account ID"
+  type        = string
 }
 variable "aws_user_name" {
-								description = "AWS user name"
-								type        = string
+  description = "AWS user name"
+  type        = string
 }
 variable "worker_mgmt_ingress_cidrs" {
-								type        = list(string)
+  type = list(string)
 }
 variable "private_subnets" {
-								description = "List of private subnet CIDR blocks"
-								type        = list(string)
+  description = "List of private subnet CIDR blocks"
+  type        = list(string)
 }
 variable "public_subnets" {
-								description = "List of public subnet CIDR blocks"
-								type        = list(string)
+  description = "List of public subnet CIDR blocks"
+  type        = list(string)
 }
