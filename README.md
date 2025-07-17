@@ -219,7 +219,7 @@ Open Grafana > Go to Dashboard Import > Enter the Dashboard ID > Click Load > Se
 Dashboard Examples:
 ```bash
 Kubernetes Pods Resource Usage                                    6417
-Node Exporter Full	                                              1860
+Node Exporter Full	                                          1860
 Kubernetes / Overview                                             21410
 Loki Logs Panel                                                   13639
 ```
