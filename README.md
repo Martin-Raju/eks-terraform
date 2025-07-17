@@ -104,7 +104,7 @@ public_subnets =
 ```
 ## Create the EKS Cluster
 
-Navigate into the project directory (eks-terraform\Terraform\env.
+Navigate into the project directory eks-terraform\Terraform\env.
 
 Run:
 ``` bash
@@ -212,6 +212,16 @@ kubectl apply -f Kubernetes\monitoring\graphana
 ### Deploy prometheus
 ``` bash
 kubectl apply -f Kubernetes\monitoring\prometheus
+```
+### Set Up a Dashboards in Grafana
+
+Open Grafana > Go to Dashboard Import > Enter the Dashboard ID > Click Load > Select data source > Import
+Dashboard Examples:
+```bash
+Kubernetes Pods Resource Usage                                    6417
+Node Exporter Full	                                          1860
+Kubernetes / Overview                                             21410
+Loki Logs Panel                                                   13639
 ```
 ## Clean Up 
 
