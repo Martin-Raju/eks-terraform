@@ -1,9 +1,9 @@
 kubernetes_version         = "1.27"
 vpc_cidr                   = "10.0.0.0/16"
-aws_region                 = "us-east-2"
-cluster_name               = "stage-poc-cluster"
+aws_region                 = "us-east-1"
+cluster_name               = "stage01-poc-cluster"
 environment                = "stage"
-bucket_name                = "poc-stage-bucket01-0123456"
+bucket_name                = "poc-stage-bucket03-0123456"
 aws_acc_id                 = "590636267315"
 aws_user_name              = "user_313"
 worker_mgmt_ingress_cidrs  = [ "10.0.0.0/8","172.16.0.0/12","192.168.0.0/16"]

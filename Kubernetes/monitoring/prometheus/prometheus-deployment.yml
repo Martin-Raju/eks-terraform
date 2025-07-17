@@ -13,39 +13,22 @@ data:
       evaluation_interval: 15s
 
     scrape_configs:
-      - job_name: 'coredns'
-        kubernetes_sd_configs:
-          - role: endpoints
-        relabel_configs:
-        - source_labels: [__meta_kubernetes_namespace, __meta_kubernetes_service_name]
-          action: keep
-          regex: kube-system;kube-dns
 
-      # Scrape kubelet (cAdvisor) metrics from nodes
-      - job_name: 'kubernetes-pods'
+      - job_name: 'node-exporter'
         kubernetes_sd_configs:
-          - role: pod
+         - role: endpoints
         relabel_configs:
-          - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_scrape]
+          - source_labels: [__meta_kubernetes_service_label_app]
             action: keep
-            regex: true
-          - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_path]
-            action: replace
-            target_label: __metrics_path__
-            regex: (.+)
-          - source_labels: [__address__, __meta_kubernetes_pod_annotation_prometheus_io_port]
-            action: replace
-            regex: (.+):(?:\d+);(\d+)
-            replacement: $1:$2
-            target_label: __address__
-          - source_labels: [__meta_kubernetes_namespace]
-            target_label: namespace
-          - source_labels: [__meta_kubernetes_pod_name]
-            target_label: pod
-      - job_name: 'kubelet'
+            regex: node-exporter
+          - source_labels: [__meta_kubernetes_endpoint_port_name]
+            action: keep
+            regex: metrics
+
+      - job_name: 'cadvisor'
         scheme: https
         tls_config:
-          insecure_skip_verify: true
+            insecure_skip_verify: true
         bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
         kubernetes_sd_configs:
           - role: node
@@ -57,17 +40,19 @@ data:
           - source_labels: [__meta_kubernetes_node_name]
             regex: (.+)
             target_label: __metrics_path__
-            replacement: /api/v1/nodes/${1}/proxy/metrics
+            replacement: /api/v1/nodes/${1}/proxy/metrics/cadvisor
 
-        # Node metadata
-          - source_labels: [__meta_kubernetes_node_name]
-            target_label: node
-          - source_labels: [__meta_kubernetes_node_label_beta_kubernetes_io_instance_type]
-            target_label: instance_type
-          - source_labels: [__meta_kubernetes_node_label_topology_kubernetes_io_zone]
-            target_label: zone
-          - source_labels: [__meta_kubernetes_node_label_kubernetes_io_hostname]
-            target_label: hostname
+      - job_name: 'kube-state-metrics'
+        kubernetes_sd_configs:
+          - role: endpoints
+        relabel_configs:
+          - source_labels: [__meta_kubernetes_service_label_app]
+            action: keep
+            regex: kube-state-metrics
+          - source_labels: [__meta_kubernetes_endpoint_port_name]
+            action: keep
+            regex: http-metrics
+          
 ---
 
 # Prometheus Deployment
