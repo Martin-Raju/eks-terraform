@@ -13,7 +13,10 @@ data:
       evaluation_interval: 15s
 
     scrape_configs:
-
+      - job_name: 'prometheus'
+        static_configs:
+          - targets: ['localhost:9090'] 
+      
       - job_name: 'node-exporter'
         kubernetes_sd_configs:
          - role: endpoints
@@ -72,10 +75,6 @@ spec:
     metadata:
       labels:
         app: prometheus
-      annotations:
-        prometheus.io/scrape: "true"
-        prometheus.io/port: "8080"
-        prometheus.io/path: "/metrics"
     spec:
       serviceAccountName: prometheus
       containers:
