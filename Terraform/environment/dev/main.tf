@@ -3,11 +3,24 @@ provider "aws" {
 }
 
 data "aws_availability_zones" "available" {}
+data "aws_caller_identity" "current" {}
+locals {
+  iam_username = split("/", data.aws_caller_identity.current.arn)[1]
+}
+
+module "label" {
+  source        = "../../modules/terraform-null-label"
+
+  name          = var.cluster_name
+  environment   = var.environment
+ 
+}
+
 
 # --- VPC Module ---
 module "vpc" {
-  source               = "./modules/vpc"
-  name                 = "${var.cluster_name}-vpc"
+  source               = "../../modules/vpc"
+  name                 = "${module.label.environment}-vpc"
   cidr                 = var.vpc_cidr
   azs                  = data.aws_availability_zones.available.names
   private_subnets      = var.private_subnets
@@ -36,8 +49,8 @@ module "vpc" {
 
 # --- EKS Module ---
 module "eks" {
-  source                          = "./modules/eks"
-  cluster_name                    = var.cluster_name
+  source                          = "../../modules/eks"
+  cluster_name                    = module.label.id
   cluster_version                 = var.kubernetes_version
   subnet_ids                      = module.vpc.private_subnets
   vpc_id                          = module.vpc.vpc_id
@@ -51,7 +64,7 @@ module "eks" {
 
   access_entries = {
     user_access = {
-      principal_arn = "arn:aws:iam::${var.aws_acc_id}:user/${var.aws_user_name}"
+      principal_arn = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:user/${local.iam_username}"
 
       policy_associations = {
         admin = {
@@ -73,7 +86,7 @@ module "eks" {
 
   eks_managed_node_groups = {
     default = {
-      name           = "${var.cluster_name}-ng"
+      name           = "${module.label.environment}-node-group"
       min_size       = 1
       max_size       = 3
       desired_size   = 1

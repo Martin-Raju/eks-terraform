@@ -31,3 +31,11 @@ output "S3_Bucket_Name" {
   description = "AWS S3_Bucket Name"
   value       = var.bucket_name
 }
+
+output "account_id" {
+  value = data.aws_caller_identity.current.account_id
+}
+
+output "iam_username" {
+  value = local.iam_username
+}
